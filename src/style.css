@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+input {
+  width: 200px;
+  outline: none;
+  border-radius: 0;
+  border: 1px solid #cccccc;
+  background-color: #fafafa;
+  height: 25px;
+  padding: 0 10px;
+}
+textarea {
+  width: 400px;
+  outline: none;
+  border-radius: 0;
+  border: 1px solid #cccccc;
+  background-color: #fafafa;
+  height: 25px;
+  padding: 10px 10px;
+}
+button {
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  height: 30px;
+  padding: 0 20px;
+  background-color: #fafafa;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #c7c7c7;
+}
+
+button:active {
+  background-color: #fafafa;
+}
+#app {
+  margin: 40px;
+  font-family: Arial;
+  /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+}

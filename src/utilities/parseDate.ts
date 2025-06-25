@@ -1,0 +1,4 @@
+export default function parseDate(date: string) {
+  const newDate = new Date(date)
+  return newDate.toLocaleString().split(',')[0]
+}
