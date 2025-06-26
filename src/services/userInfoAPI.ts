@@ -1,6 +1,6 @@
 async function findAllUserInfo() {
   try {
-    const response = await fetch('FrontTestingService-back/userInfo/findAll', {
+    const response = await fetch('/FrontTestingService-back/userInfo/findAll', {
       method: 'GET',
       credentials: 'include',
     })

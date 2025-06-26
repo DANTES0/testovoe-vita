@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<BlogCard>(), {
 </script>
 
 <template>
-  <div class="card" @click="() => route.push(`/blogArticle/${'1'}`)">
+  <div class="card" @click="() => route.push(`/blogArticle/${props.id}`)">
     <div class="card__title">{{ props.title }}</div>
     <div @click.stop="() => route.push(`/user/${props.userInfoId}`)">{{ props.username }}</div>
     <div>{{ props.briefDescription }}</div>
