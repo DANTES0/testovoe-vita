@@ -1,43 +1,68 @@
 <script setup lang="ts">
 import type PostType from '../types/PostType'
-import { withDefaults, defineProps } from 'vue'
+import { withDefaults, defineProps, onMounted, ref } from 'vue'
 import parseDate from '../utilities/parseDate'
 import CommentCard from '../components/CommentCard.vue'
-const props = withDefaults(defineProps<PostType>(), {
-  briefDescription: 'Краткое Описание Описание Описание Описание',
-  dateTime: '2025-06-25T08:05:04.162Z',
-  fullDescription: 'Полное описание описание описание описание',
-  title: 'Заголовок',
-  id: 0,
-  userInfoId: 10,
-  comments: () => [
-    {
-      datetime: '2025-06-25T08:05:04.162Z',
-      email: 'test@test.ru',
-      id: 1,
-      textComment: 'Комментарий 1',
-      userInfo: 'Юзер инфо',
-    },
-  ],
+import { findPostById } from '../services/postAPI'
+import { useRoute } from 'vue-router'
+import { addComment } from '../services/commentsAPI'
+import type CommentType from '../types/CommentsType'
+
+const post = ref<PostType>()
+const email = ref('')
+const username = ref('')
+const textComment = ref('')
+const route = useRoute()
+async function handleSubmitComment() {
+  const object = {
+    email: email.value,
+    textComment: textComment.value,
+    userInfo: username.value,
+  }
+  try {
+    const success = await addComment(object, Number(route.params.id))
+    if (success) {
+      email.value = ''
+      username.value = ''
+      textComment.value = ''
+
+      post.value = await findPostById(Number(route.params.id))
+    }
+  } catch (error) {
+    throw new Error(`Ошибка: ${error}`)
+  }
+}
+onMounted(async () => {
+  post.value = await findPostById(Number(route.params.id))
 })
 </script>
 
 <template>
   <div class="blog-article">
-    <div class="blog-article__title">{{ props.title }}</div>
-    <div class="blog-article__date"><span>Обновлено: </span>{{ parseDate(props.dateTime) }}</div>
-    <div class="blog-article__brief-description">{{ props.briefDescription }}</div>
+    <div class="blog-article__title">{{ post?.title }}</div>
+    <div class="blog-article__date">
+      <span>Обновлено: </span>{{ parseDate(post?.dateTime ?? '') }}
+    </div>
+    <div class="blog-article__brief-description">{{ post?.briefDescription }}</div>
     <hr style="width: 100%" />
-    <div class="blog-article__full-description">{{ props.fullDescription }}</div>
+    <div class="blog-article__full-description">{{ post?.fullDescription }}</div>
 
     <div class="blog-article__comments-heading">Комментарии</div>
-    <CommentCard />
+    <CommentCard
+      v-for="item in post?.comments"
+      :key="item.id"
+      :datetime="item.datetime ?? ''"
+      :email="item.email"
+      :id="item.id ?? 0"
+      :text-comment="item.textComment"
+      :user-info="item.userInfo"
+    />
     <div class="blog-article__comments-heading">Оставить комментарий</div>
-    <input type="text" placeholder="Имя пользователя" />
-    <input type="text" placeholder="Почта" />
+    <input type="text" placeholder="Имя пользователя" v-model="username" />
+    <input type="text" placeholder="Почта" v-model="email" />
     <div class="blog-article__enter-comments__textarea-container">
-      <textarea placeholder="Текст комментария"></textarea>
-      <button>Отправить</button>
+      <textarea placeholder="Текст комментария" v-model="textComment"></textarea>
+      <button @click="handleSubmitComment">Отправить</button>
     </div>
 
     <div class="blog-article__edit__heading">Редактирование статьи</div>

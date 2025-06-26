@@ -3,16 +3,13 @@ import { onMounted, ref } from 'vue'
 import BlogCard from '../components/BlogCard.vue'
 import { useRoute } from 'vue-router'
 import type UserBlogType from '../types/UserBlogType'
-import { findAllUserInfo } from '../services/userInfoAPI'
+import { findAllUserInfo, findUserById } from '../services/userInfoAPI'
 
 const route = useRoute()
 const user = ref<UserBlogType>()
-const allUser = ref<UserBlogType[]>([])
 
 onMounted(async () => {
-  allUser.value = await findAllUserInfo()
-
-  user.value = allUser.value.find((user) => user.id == Number(route.params.id))
+  user.value = await findUserById(Number(route.params.id))
   user.value?.post.sort((a, b) => {
     const dateA = new Date(a.dateTime).getTime()
     const dateB = new Date(b.dateTime).getTime()

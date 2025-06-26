@@ -1,3 +1,5 @@
+import type UserBlogType from '../types/UserBlogType'
+
 async function findAllUserInfo() {
   try {
     const response = await fetch('/FrontTestingService-back/userInfo/findAll', {
@@ -14,4 +16,9 @@ async function findAllUserInfo() {
   }
 }
 
-export { findAllUserInfo }
+async function findUserById(id: number) {
+  let allUser = await findAllUserInfo()
+  return allUser.find((user: UserBlogType) => user.id === id)
+}
+
+export { findAllUserInfo, findUserById }

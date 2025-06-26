@@ -1,7 +1,7 @@
 export default interface CommentType {
-  datetime: string
+  datetime?: string
   email: string
-  id: number
+  id?: number
   textComment: string
   userInfo: string
 }
