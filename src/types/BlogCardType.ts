@@ -1,8 +1,9 @@
-export default interface BlogCard {
+export default interface BlogCardType {
   id: number
-  userInfoId: number
+  username: string
   briefDescription: string
   title: string
   dateTime: string
   countComments: number
+  userInfoId: number
 }

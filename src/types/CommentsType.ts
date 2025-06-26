@@ -1,9 +1,7 @@
-export default interface CommentsType {
-  comments: {
-    datetime: string
-    email: string
-    id: number
-    textComment: string
-    userInfo: string
-  }[]
+export default interface CommentType {
+  datetime: string
+  email: string
+  id: number
+  textComment: string
+  userInfo: string
 }

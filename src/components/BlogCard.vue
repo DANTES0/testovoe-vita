@@ -9,18 +9,19 @@ const route = useRouter()
 
 const props = withDefaults(defineProps<BlogCard>(), {
   id: 0,
-  userInfoId: 0,
+  username: 'Иван',
   briefDescription: 'Описание описание описание описание описание описание',
   title: 'Заголовок',
   dateTime: '2025-06-25T08:05:04.162Z',
   countComments: 0,
+  userInfoId: 0,
 })
 </script>
 
 <template>
   <div class="card" @click="() => route.push(`/blogArticle/${'1'}`)">
     <div class="card__title">{{ props.title }}</div>
-    <div @click.stop="() => route.push(`/user/${props.userInfoId}`)">{{ props.userInfoId }}</div>
+    <div @click.stop="() => route.push(`/user/${props.userInfoId}`)">{{ props.username }}</div>
     <div>{{ props.briefDescription }}</div>
     <div class="card__date-comments">
       <div><span>Обновлено: </span> {{ parseDate(props.dateTime) }}</div>
@@ -35,7 +36,7 @@ const props = withDefaults(defineProps<BlogCard>(), {
 <style lang="css" scoped>
 .card {
   width: 300px;
-  height: 200px;
+  height: 250px;
   background-color: #fafafa;
   border: 1px solid #cccccc;
   border-radius: 8px;
@@ -48,7 +49,7 @@ const props = withDefaults(defineProps<BlogCard>(), {
 }
 .card__title {
   font-weight: 500;
-  font-size: 28px;
+  font-size: 24px;
 }
 .card__date-comments {
   margin-top: auto;

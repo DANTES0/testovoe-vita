@@ -1,10 +1,9 @@
 import type CommentsType from './CommentsType'
-
-export default interface PostType extends CommentsType {
-  briefDescription: string
-  dateTime: string
-  fullDescription: string
+export default interface PostType {
   id: number
+  dateTime: string
   title: string
-  userInfoId: number
+  briefDescription: string
+  fullDescription: string
+  comments: CommentsType[]
 }
