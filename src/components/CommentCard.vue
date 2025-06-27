@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { deleteComment } from '../services/commentsAPI'
+
 const props = withDefaults(
   defineProps<{
     datetime: string
@@ -23,7 +25,9 @@ const props = withDefaults(
     <div class="blog-article__comments__info">
       <div class="blog-article__comments__username">{{ props.userInfo }}</div>
       <div class="blog-article__comments__email">{{ props.email }}</div>
-      <div style="font-size: 10px; font-weight: 100; color: darkgrey">Удалить комментарий</div>
+      <div @click="deleteComment(props.id)" class="comments__delete" style="">
+        Удалить комментарий
+      </div>
     </div>
     <div class="blog-article__comments__text">{{ props.textComment }}</div>
   </div>
@@ -56,5 +60,14 @@ const props = withDefaults(
 }
 .blog-article__comments__email {
   font-size: 14px;
+}
+.comments__delete {
+  font-size: 10px;
+  font-weight: 100;
+  color: darkgrey;
+  cursor: pointer;
+}
+.comments__delete:hover {
+  color: rgb(92, 92, 92);
 }
 </style>

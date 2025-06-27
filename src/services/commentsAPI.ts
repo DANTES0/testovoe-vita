@@ -9,12 +9,23 @@ async function addComment(comment: CommentType, postId: number) {
       },
       body: JSON.stringify(comment),
     })
-    if (response.ok) {
-      return true
+    if (!response.ok) {
+      console.error('Ошибка добавления комментария')
     }
   } catch (error) {
-    console.error(error)
+    throw new Error(`Ошибка: ${error}`)
   }
 }
-
-export { addComment }
+async function deleteComment(commentId: number) {
+  try {
+    const response = await fetch(`/FrontTestingService-back/comment/${commentId}`, {
+      method: 'DELETE',
+    })
+    if (!response.ok) {
+      console.error('Ошибка удаления комментария')
+    }
+  } catch (error) {
+    throw new Error(`Ошибка: ${error}`)
+  }
+}
+export { addComment, deleteComment }
