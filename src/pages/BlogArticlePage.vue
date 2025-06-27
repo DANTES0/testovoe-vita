@@ -6,12 +6,16 @@ import CommentCard from '../components/CommentCard.vue'
 import { findPostById } from '../services/postAPI'
 import { useRoute } from 'vue-router'
 import { addComment } from '../services/commentsAPI'
-import type CommentType from '../types/CommentsType'
+import MyInput from '../utilities/UI/MyInput.vue'
+import MyTextarea from '../utilities/UI/MyTextarea.vue'
 
 const post = ref<PostType>()
 const email = ref('')
+const emailError = ref(false)
 const username = ref('')
+const usernameError = ref(false)
 const textComment = ref('')
+const textCommentError = ref(false)
 const route = useRoute()
 async function handleSubmitComment() {
   const object = {
@@ -20,6 +24,21 @@ async function handleSubmitComment() {
     userInfo: username.value,
   }
   try {
+    if (email.value.length > 50 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      emailError.value = true
+    }
+    if (textComment.value.length > 255 || textComment.value.length == 0) {
+      textCommentError.value = true
+    }
+
+    if (username.value.length > 50 || username.value.length == 0) {
+      usernameError.value = true
+    }
+
+    if (emailError.value || textCommentError.value || usernameError.value) {
+      emailError.value = textCommentError.value = usernameError.value = true
+      throw new Error('Ошибка ввода')
+    }
     const success = await addComment(object, Number(route.params.id))
     if (success) {
       email.value = ''
@@ -58,27 +77,39 @@ onMounted(async () => {
       :user-info="item.userInfo"
     />
     <div class="blog-article__comments-heading">Оставить комментарий</div>
-    <input type="text" placeholder="Имя пользователя" v-model="username" />
-    <input type="text" placeholder="Почта" v-model="email" />
-    <div class="blog-article__enter-comments__textarea-container">
-      <textarea placeholder="Текст комментария" v-model="textComment"></textarea>
-      <button @click="handleSubmitComment">Отправить</button>
-    </div>
+    <MyInput
+      v-model="username"
+      :placeholder="'Имя пользователя'"
+      :check-error="usernameError"
+      :error-text="'Обязательное поле, длина не более 50 символов'"
+      :required-field="true"
+      :title="'Имя пользователя'"
+    ></MyInput>
+    <MyInput
+      v-model="email"
+      :placeholder="'Почта'"
+      :check-error="emailError"
+      :error-text="'Формма ввода ввида: test@test.ru, длина не более 50 символов'"
+      :required-field="false"
+      :title="'Почта'"
+    ></MyInput>
+
+    <MyTextarea
+      v-model="textComment"
+      :placeholder="'Текст комментария'"
+      :check-error="textCommentError"
+      :error-text="'Обязательное поле, длина не более 50 символов'"
+      :required-field="true"
+      :title="'Текст комментария'"
+    />
+
+    <button style="width: fit-content" @click="handleSubmitComment">Отправить</button>
 
     <div class="blog-article__edit__heading">Редактирование статьи</div>
     <div class="blog-article__edit__buttons">
       <button>Редактировать</button>
       <button>Удалить</button>
     </div>
-
-    <!-- <div class="blog-article__comments__container">
-      <div class="blog-article__comments__stripe"></div>
-      <div class="blog-article__comments__info">
-        <div class="blog-article__comments__username">{{ props.comments[0].userInfo }}</div>
-        <div class="blog-article__comments__email">{{ props.comments[0].email }}</div>
-      </div>
-      <div class="blog-article__comments__text">{{ props.comments[0].textComment }}</div>
-    </div> -->
   </div>
 </template>
 
@@ -111,10 +142,5 @@ onMounted(async () => {
 .blog-article__comments-heading {
   font-size: 24px;
   font-weight: 600;
-}
-.blog-article__enter-comments__textarea-container {
-  display: flex;
-  gap: 80px;
-  align-items: end;
 }
 </style>
