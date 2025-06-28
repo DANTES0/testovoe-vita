@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type PostType from '../types/PostType'
-import { withDefaults, defineProps, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import parseDate from '../utilities/parseDate'
 import CommentCard from '../components/CommentCard.vue'
-import { findPostById } from '../services/postAPI'
-import { useRoute } from 'vue-router'
+import { deletePost, findPostById } from '../services/postAPI'
+import { useRoute, useRouter } from 'vue-router'
 import { addComment } from '../services/commentsAPI'
 import MyInput from '../utilities/UI/MyInput.vue'
 import MyTextarea from '../utilities/UI/MyTextarea.vue'
+
+const isLoading = ref(true)
 
 const post = ref<PostType>()
 const email = ref('')
@@ -17,47 +19,58 @@ const usernameError = ref(false)
 const textComment = ref('')
 const textCommentError = ref(false)
 const route = useRoute()
+const router = useRouter()
+
+async function loadPost() {
+  post.value = await findPostById(Number(route.params.id))
+  console.log(post.value)
+}
+
+async function handleDeletePost(postId: number) {
+  await deletePost(postId)
+  router.back()
+}
 async function handleSubmitComment() {
+  emailError.value = textCommentError.value = usernameError.value = false
+  if (email.value.length > 50 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    emailError.value = true
+  }
+  if (textComment.value.length > 255 || textComment.value.length == 0) {
+    textCommentError.value = true
+  }
+
+  if (username.value.length > 50 || username.value.length == 0) {
+    usernameError.value = true
+  }
+
+  if (emailError.value || textCommentError.value || usernameError.value) {
+    return
+  }
   const object = {
     email: email.value,
     textComment: textComment.value,
     userInfo: username.value,
   }
   try {
-    if (email.value.length > 50 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      emailError.value = true
-    }
-    if (textComment.value.length > 255 || textComment.value.length == 0) {
-      textCommentError.value = true
-    }
+    await addComment(object, Number(route.params.id))
 
-    if (username.value.length > 50 || username.value.length == 0) {
-      usernameError.value = true
-    }
-
-    if (emailError.value || textCommentError.value || usernameError.value) {
-      emailError.value = textCommentError.value = usernameError.value = true
-      throw new Error('Ошибка ввода')
-    }
-    const success = await addComment(object, Number(route.params.id))
-    if (success) {
-      email.value = ''
-      username.value = ''
-      textComment.value = ''
-
-      post.value = await findPostById(Number(route.params.id))
-    }
+    post.value = await findPostById(Number(route.params.id))
+    email.value = ''
+    username.value = ''
+    textComment.value = ''
   } catch (error) {
     throw new Error(`Ошибка: ${error}`)
   }
 }
 onMounted(async () => {
-  post.value = await findPostById(Number(route.params.id))
+  await loadPost()
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <div class="blog-article">
+  <div v-if="isLoading">Загрузка...</div>
+  <div v-else class="blog-article">
     <div class="blog-article__title">{{ post?.title }}</div>
     <div class="blog-article__date">
       <span>Обновлено: </span>{{ parseDate(post?.dateTime ?? '') }}
@@ -67,7 +80,9 @@ onMounted(async () => {
     <div class="blog-article__full-description">{{ post?.fullDescription }}</div>
 
     <div class="blog-article__comments-heading">Комментарии</div>
+    <div v-if="!post?.comments.length">Комментариев нет</div>
     <CommentCard
+      v-else
       v-for="item in post?.comments"
       :key="item.id"
       :datetime="item.datetime ?? ''"
@@ -75,6 +90,7 @@ onMounted(async () => {
       :id="item.id ?? 0"
       :text-comment="item.textComment"
       :user-info="item.userInfo"
+      @updateComments="loadPost"
     />
     <div class="blog-article__comments-heading">Оставить комментарий</div>
     <MyInput
@@ -107,8 +123,8 @@ onMounted(async () => {
 
     <div class="blog-article__edit__heading">Редактирование статьи</div>
     <div class="blog-article__edit__buttons">
-      <button>Редактировать</button>
-      <button>Удалить</button>
+      <button @click="router.push(`/updateArticle/${route.params.id}`)">Редактировать</button>
+      <button @click="handleDeletePost(Number(route.params.id))">Удалить</button>
     </div>
   </div>
 </template>

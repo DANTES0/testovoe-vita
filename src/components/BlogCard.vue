@@ -63,4 +63,15 @@ const props = withDefaults(defineProps<BlogCard>(), {
   align-items: center;
   gap: 8px;
 }
+
+@media (max-width: 430px) {
+  .card {
+    width: 250px;
+    height: 300px;
+  }
+  .card__date-comments {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 </style>

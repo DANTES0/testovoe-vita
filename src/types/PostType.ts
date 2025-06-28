@@ -7,3 +7,10 @@ export default interface PostType {
   fullDescription: string
   comments: CommentsType[]
 }
+
+export interface PostDataType {
+  id: number
+  title: string
+  briefDescription: string
+  fullDescription: string
+}

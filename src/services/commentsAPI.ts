@@ -2,7 +2,7 @@ import type CommentType from '../types/CommentsType'
 
 async function addComment(comment: CommentType, postId: number) {
   try {
-    const response = await fetch(`/FrontTestingService-back/comment?postId=${postId}`, {
+    const response = await fetch(`/api/comment?postId=${postId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ async function addComment(comment: CommentType, postId: number) {
 }
 async function deleteComment(commentId: number) {
   try {
-    const response = await fetch(`/FrontTestingService-back/comment/${commentId}`, {
+    const response = await fetch(`/api/comment/${commentId}`, {
       method: 'DELETE',
     })
     if (!response.ok) {

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import BlogCard from '../components/BlogCard.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type UserBlogType from '../types/UserBlogType'
-import { findAllUserInfo, findUserById } from '../services/userInfoAPI'
-
+import { findUserById } from '../services/userInfoAPI'
+const isLoading = ref(true)
 const route = useRoute()
+const router = useRouter()
 const user = ref<UserBlogType>()
 
 onMounted(async () => {
@@ -15,13 +16,17 @@ onMounted(async () => {
     const dateB = new Date(b.dateTime).getTime()
     return dateB - dateA
   })
+  isLoading.value = false
 })
 </script>
 
 <template>
-  <div class="profile">
+  <div v-if="isLoading">Загрузка...</div>
+  <div v-else class="profile">
     <div class="profile__heading">{{ user?.blogName }}</div>
-    <button style="width: 200px">Добавить запись</button>
+    <button @click="router.push(`/addArticle/${user?.id}`)" style="width: 200px">
+      Добавить запись
+    </button>
     <div class="profile__card-container">
       <BlogCard
         v-for="item in user?.post"
@@ -54,5 +59,10 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+@media (max-width: 430px) {
+  .profile__card-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
 }
 </style>

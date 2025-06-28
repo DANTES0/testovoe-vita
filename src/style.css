@@ -12,7 +12,6 @@ input {
   padding: 0 10px;
 }
 textarea {
-  width: 400px;
   outline: none;
   border-radius: 0;
   border: 1px solid #cccccc;
@@ -40,4 +39,9 @@ button:active {
   margin: 40px;
   font-family: Arial;
   /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+}
+@media (max-width: 430px) {
+  #app {
+    margin: 10px;
+  }
 }

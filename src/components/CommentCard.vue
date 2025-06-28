@@ -17,48 +17,55 @@ const props = withDefaults(
     userInfo: 'Юзер инфо',
   }
 )
+const emit = defineEmits<{
+  (e: 'updateComments'): void
+}>()
+
+async function handleDelete() {
+  await deleteComment(props.id)
+  emit('updateComments')
+}
 </script>
 
 <template>
-  <div class="blog-article__comments__container">
-    <div class="blog-article__comments__stripe"></div>
-    <div class="blog-article__comments__info">
-      <div class="blog-article__comments__username">{{ props.userInfo }}</div>
-      <div class="blog-article__comments__email">{{ props.email }}</div>
-      <div @click="deleteComment(props.id)" class="comments__delete" style="">
-        Удалить комментарий
-      </div>
+  <div class="comments__container">
+    <div class="comments__stripe"></div>
+    <div class="comments__info">
+      <div class="comments__username">{{ props.userInfo }}</div>
+      <div class="comments__email">{{ props.email }}</div>
+      <div @click="handleDelete()" class="comments__delete" style="">Удалить комментарий</div>
     </div>
-    <div class="blog-article__comments__text">{{ props.textComment }}</div>
+    <div class="comments__text">{{ props.textComment }}</div>
   </div>
+  <hr />
 </template>
 
 <style lang="css" scoped>
-.blog-article__comments__container {
+.comments__container {
   display: flex;
   gap: 20px;
   position: relative;
 }
-.blog-article__comments__stripe {
+.comments__stripe {
   height: auto;
   width: 2px;
   background-color: black;
 }
-.blog-article__comments__username {
+.comments__username {
   font-size: 18px;
   font-weight: 600;
 }
 
-.blog-article__comments__info {
+.comments__info {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.blog-article__comments__text {
+.comments__text {
   margin-left: 20px;
   font-size: 16px;
 }
-.blog-article__comments__email {
+.comments__email {
   font-size: 14px;
 }
 .comments__delete {
@@ -69,5 +76,35 @@ const props = withDefaults(
 }
 .comments__delete:hover {
   color: rgb(92, 92, 92);
+}
+hr {
+  width: 0;
+}
+@media (max-width: 750px) {
+  .comments__container {
+    flex-direction: column;
+  }
+
+  .comments__stripe {
+    display: none;
+  }
+
+  .comments__info {
+    flex-direction: column;
+  }
+
+  .comments__text {
+    margin-left: 0;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .comments__delete {
+    font-size: 12px;
+  }
+
+  hr {
+    width: 100%;
+  }
 }
 </style>

@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '../pages/MainPage.vue'
 import BlogArticlePage from '../pages/BlogArticlePage.vue'
 import UserProfilePage from '../pages/UserProfilePage.vue'
+import UpdatePost from '../pages/UpdatePost.vue'
+import AddPostPage from '../pages/AddPostPage.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -17,6 +19,14 @@ export const router = createRouter({
     {
       path: '/user/:id',
       component: UserProfilePage,
+    },
+    {
+      path: '/updateArticle/:id',
+      component: UpdatePost,
+    },
+    {
+      path: '/addArticle/:id',
+      component: AddPostPage,
     },
   ],
 })

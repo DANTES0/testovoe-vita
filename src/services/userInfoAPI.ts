@@ -2,7 +2,7 @@ import type UserBlogType from '../types/UserBlogType'
 
 async function findAllUserInfo() {
   try {
-    const response = await fetch('/FrontTestingService-back/userInfo/findAll', {
+    const response = await fetch('/api/userInfo/findAll', {
       method: 'GET',
       credentials: 'include',
     })
@@ -10,9 +10,11 @@ async function findAllUserInfo() {
     if (response.ok) {
       let data = await response.json()
       return data
+    } else {
+      console.error('Ошибка получения пользователей')
     }
   } catch (error) {
-    console.error(error)
+    throw new Error(`Ошибка запроса: ${error}`)
   }
 }
 

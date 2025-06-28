@@ -6,17 +6,17 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/FrontTestingService-auth/': {
+      '/login': {
         target: 'http://91.220.155.234:8080',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path,
+        rewrite: (path) => `FrontTestingService-auth${path}`,
       },
-      '/FrontTestingService-back/': {
+      '/api': {
         target: 'http://91.220.155.234:8080',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path,
+        rewrite: (path) => `/FrontTestingService-back${path.replace('/api', '')}`,
       },
     },
   },
