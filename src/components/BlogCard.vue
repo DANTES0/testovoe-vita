@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import MessageIcon from '../assets/icons/MessageIcon.vue'
 import type BlogCard from '../types/BlogCardType'
 import parseDate from '../utilities/parseDate'
@@ -21,7 +21,9 @@ const props = withDefaults(defineProps<BlogCard>(), {
 <template>
   <div class="card" @click="() => route.push(`/blogArticle/${props.id}`)">
     <div class="card__title">{{ props.title }}</div>
-    <div @click.stop="() => route.push(`/user/${props.userInfoId}`)">{{ props.username }}</div>
+    <div class="card__username" @click.stop="() => route.push(`/user/${props.userInfoId}`)">
+      {{ props.username }}
+    </div>
     <div>{{ props.briefDescription }}</div>
     <div class="card__date-comments">
       <div><span>Обновлено: </span> {{ parseDate(props.dateTime) }}</div>
@@ -50,6 +52,13 @@ const props = withDefaults(defineProps<BlogCard>(), {
 .card__title {
   font-weight: 500;
   font-size: 24px;
+}
+.card__username {
+  width: fit-content;
+  cursor: pointer;
+}
+.card__username:hover {
+  color: #cccccc;
 }
 .card__date-comments {
   margin-top: auto;

@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import { deleteComment } from '../services/commentsAPI'
+import type CommentType from '../types/CommentsType'
 
-const props = withDefaults(
-  defineProps<{
-    datetime: string
-    email: string
-    id: number
-    textComment: string
-    userInfo: string
-  }>(),
-  {
-    datetime: '2025-06-25T08:05:04.162Z',
-    email: 'test@test.ru',
-    id: 1,
-    textComment: 'Комментарий 1',
-    userInfo: 'Юзер инфо',
-  }
-)
+const props = withDefaults(defineProps<CommentType>(), {
+  datetime: '2025-06-25T08:05:04.162Z',
+  email: 'test@test.ru',
+  id: 1,
+  textComment: 'Комментарий 1',
+  userInfo: 'Юзер инфо',
+})
 const emit = defineEmits<{
   (e: 'updateComments'): void
 }>()
